@@ -90,4 +90,41 @@ class RedeemEndpointTest extends TestCase
             ->assertStatus(409)
             ->assertJson(['message' => 'Gift card already redeemed']);
     }
+
+    public function test_should_not_allow_redeeming_same_code_twice(): void
+    {
+        $body = [
+            'code' => 'GFLOW-TEST-0001',
+            'user' => ['email' => 'user@example.com'],
+        ];
+        $eventId = hash_hmac(
+            algo: 'sha256',
+            data: $body['code'].$body['user']['email'],
+            key: config('app.key')
+        );
+        $response = [
+            'code' => $body['code'],
+            'status' => 'redeemed',
+            'product_id' => 'product_abc',
+            'creator_id' => 'creator_123',
+            'webhook' => [
+                'status' => 'queued',
+                'event_id' => $eventId,
+            ],
+        ];
+
+        $this->post('api/redeem', $body, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJson($response);
+
+        $this->post('api/redeem', $body, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJson($response);
+
+        $body['user']['email'] = 'another@email.com';
+
+        $this->post('api/redeem', $body, ['Accept' => 'application/json'])
+            ->assertStatus(409)
+            ->assertJson(['message' => 'Gift card already redeemed']);
+    }
 }

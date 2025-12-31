@@ -22,7 +22,9 @@ final class RedeemGiftCardAction
     {
         $card = $this->repository->findByCode($request->input('code'));
 
-        $this->validateGiftCard($card);
+        if (! $card) {
+            throw new NotFoundException('Gift card not found');
+        }
 
         $eventId = hash_hmac(
             algo: 'sha256',
@@ -30,24 +32,17 @@ final class RedeemGiftCardAction
             key: config('app.key')
         );
 
+        if ($card['status'] == GiftCardStatus::REDEEMED->value) {
+            if ($card['webhook']['event_id'] === $eventId) {
+                return $card;
+            }
+            throw new DomainException('Gift card already redeemed');
+        }
+
         $cardRedeemed = $this->repository->redeem($card['code'], $eventId);
 
         // TODO: Dispatch webhook job
 
         return $cardRedeemed;
-    }
-
-    /**
-     * @throws DomainException
-     * @throws NotFoundException
-     */
-    private function validateGiftCard(false|array $card): void
-    {
-        if (! $card) {
-            throw new NotFoundException('Gift card not found');
-        }
-        if ($card['status'] == GiftCardStatus::REDEEMED->value) {
-            throw new DomainException('Gift card already redeemed');
-        }
     }
 }
