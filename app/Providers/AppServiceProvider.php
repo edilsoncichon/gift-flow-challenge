@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\FileGiftCardRepository;
+use App\Repositories\GiftCardRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(
+            GiftCardRepository::class,
+            FileGiftCardRepository::class
+        );
     }
 
     /**

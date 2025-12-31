@@ -1,7 +1,6 @@
 <?php
 
+use App\Http\Controllers\RedeemGiftCardController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return response()->json(['message' => 'API is working!']);
-});
+Route::post('redeem', RedeemGiftCardController::class);

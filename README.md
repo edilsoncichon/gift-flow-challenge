@@ -11,3 +11,10 @@ Each card has a redemption code, and once the card is redeemed, the gift card is
 ````bash
 ./sail up -d
 ````
+
+## Comandos Úteis
+- vendor/bin/pint: Corrige a sintaxe do código seguindo os padrões do Laravel Pint.
+
+## Dicas
+- Antes de enviar a request para a api, lembre de adicionar o header `Accept: application/json` para garantir que as 
+respostas sejam no formato JSON.

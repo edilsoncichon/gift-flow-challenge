@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions;
+
+use App\Enums\GiftCardStatus;
+use App\Exceptions\DomainException;
+use App\Exceptions\NotFoundException;
+use App\Http\Requests\RedeemRequest;
+use App\Repositories\GiftCardRepository;
+
+final class RedeemGiftCardAction
+{
+    public function __construct(private GiftCardRepository $repository) {}
+
+    /**
+     * @throws NotFoundException
+     * @throws DomainException
+     */
+    public function execute(RedeemRequest $request): array
+    {
+        $card = $this->repository->findByCode($request->input('code'));
+
+        $this->validateGiftCard($card);
+
+        $eventId = hash_hmac(
+            algo: 'sha256',
+            data: $card['code'].$request->input('user.email'),
+            key: config('app.key')
+        );
+
+        $cardRedeemed = $this->repository->redeem($card['code'], $eventId);
+
+        // TODO: Dispatch webhook job
+
+        return $cardRedeemed;
+    }
+
+    /**
+     * @throws DomainException
+     * @throws NotFoundException
+     */
+    private function validateGiftCard(false|array $card): void
+    {
+        if (! $card) {
+            throw new NotFoundException('Gift card not found');
+        }
+        if ($card['status'] == GiftCardStatus::REDEEMED->value) {
+            throw new DomainException('Gift card already redeemed');
+        }
+    }
+}

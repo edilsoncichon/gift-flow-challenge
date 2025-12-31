@@ -17,7 +17,7 @@ class SeedGiftCardsCommand extends Command
     {
         $data = config('giftflow.sample_gift_cards', []);
 
-        Storage::disk('local')->put('giftcards.json', json_encode($data, JSON_PRETTY_PRINT));
+        Storage::disk('local')->put(config('giftflow.gift_cards_file'), json_encode($data, JSON_PRETTY_PRINT));
 
         $this->info('Gift cards seeded successfully in storage/app/private/giftcards.json');
     }
