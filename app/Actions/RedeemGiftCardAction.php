@@ -8,6 +8,7 @@ use App\Enums\GiftCardStatus;
 use App\Exceptions\DomainException;
 use App\Exceptions\NotFoundException;
 use App\Http\Requests\RedeemRequest;
+use App\Jobs\NotifyGiftCardIssuerRedemptionJob;
 use App\Repositories\GiftCardRepository;
 
 final class RedeemGiftCardAction
@@ -41,7 +42,7 @@ final class RedeemGiftCardAction
 
         $cardRedeemed = $this->repository->redeem($card['code'], $eventId);
 
-        // TODO: Dispatch webhook job
+        NotifyGiftCardIssuerRedemptionJob::dispatch($cardRedeemed);
 
         return $cardRedeemed;
     }
