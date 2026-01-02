@@ -2,7 +2,9 @@
 
 namespace Tests\Integration;
 
+use App\Jobs\NotifyGiftCardIssuerRedemptionJob;
 use App\Repositories\FileGiftCardRepository;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class RedeemEndpointTest extends TestCase
@@ -15,6 +17,7 @@ class RedeemEndpointTest extends TestCase
 
     public function test_should_successfully_redeem_code(): void
     {
+        $queue = Queue::fake();
         $body = [
             'code' => 'GFLOW-TEST-0001',
             'user' => ['email' => 'newuser@example.com'],
@@ -38,6 +41,8 @@ class RedeemEndpointTest extends TestCase
         $this->post('api/redeem', $body, ['Accept' => 'application/json'])
             ->assertStatus(200)
             ->assertJson($response);
+
+        $queue->assertPushed(NotifyGiftCardIssuerRedemptionJob::class);
 
         $repository = $this->app->make(FileGiftCardRepository::class);
         $redeemedCard = $repository->findByCode($body['code']);

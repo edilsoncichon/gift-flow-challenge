@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ProcessWebhookJob implements ShouldQueue
 {
@@ -41,5 +42,12 @@ class ProcessWebhookJob implements ShouldQueue
             "Webhook event {$this->payload['event_id']} processed successfully.",
             $this->payload
         );
+    }
+
+    public function failed(?Throwable $exception): void
+    {
+        Log::error($exception?->getMessage(), [
+            'payload' => $this->payload,
+        ]);
     }
 }

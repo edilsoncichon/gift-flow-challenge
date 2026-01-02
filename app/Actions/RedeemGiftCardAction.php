@@ -10,6 +10,7 @@ use App\Exceptions\NotFoundException;
 use App\Http\Requests\RedeemRequest;
 use App\Jobs\NotifyGiftCardIssuerRedemptionJob;
 use App\Repositories\GiftCardRepository;
+use Illuminate\Support\Facades\Log;
 
 final class RedeemGiftCardAction
 {
@@ -42,7 +43,17 @@ final class RedeemGiftCardAction
 
         $cardRedeemed = $this->repository->redeem($card['code'], $eventId);
 
-        NotifyGiftCardIssuerRedemptionJob::dispatch($cardRedeemed);
+        NotifyGiftCardIssuerRedemptionJob::dispatch(
+            $cardRedeemed,
+            $request->input('user.email'),
+            now()->toIso8601ZuluString()
+        );
+
+        Log::info('Gift card redeemed', [
+            'giftcard' => $cardRedeemed,
+            'redeemed_by' => $request->input('user.email'),
+            'event_id' => $eventId,
+        ]);
 
         return $cardRedeemed;
     }

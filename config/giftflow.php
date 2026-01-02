@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'webhook_url' => env('GIFTFLOW_WEBHOOK_URL'),
+
     'webhook_secret' => env('GIFTFLOW_WEBHOOK_SECRET'),
 
     'gift_cards_file' => 'giftcards.json',

@@ -16,6 +16,9 @@ sem levantar todo o ambiente Docker, mas pra isso vc precisa ter o PHP e o Compo
 ## Execução do Projeto
 ````bash
 ./sail up -d
+
+# Para processar as jobs:
+./sail artisan queue:work
 ````
 
 ## Comandos Úteis
