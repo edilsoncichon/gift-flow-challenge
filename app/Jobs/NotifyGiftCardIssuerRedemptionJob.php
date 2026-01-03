@@ -18,11 +18,13 @@ class NotifyGiftCardIssuerRedemptionJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public int $tries = 5;
+
     public int $timeout = 30;
 
-    public function __construct(private array $giftCard,
-                                private string $emailUser,
-                                private string $sentAt
+    public function __construct(
+        private array $giftCard,
+        private string $emailUser,
+        private string $sentAt
     ) {}
 
     public function backoff(): array
@@ -54,7 +56,7 @@ class NotifyGiftCardIssuerRedemptionJob implements ShouldQueue
             ->post(config('giftflow.webhook_url'), $payloadWebhook);
 
         if ($response->failed()) {
-            throw new Exception("Request failed with status: " . $response->status());
+            throw new Exception('Request failed with status: '.$response->status());
         }
 
         Log::info('Successfully sent webhook to the issuer.', [

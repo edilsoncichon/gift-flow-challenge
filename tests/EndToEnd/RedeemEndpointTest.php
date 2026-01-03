@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Integration;
+namespace Tests\EndToEnd;
 
 use App\Jobs\NotifyGiftCardIssuerRedemptionJob;
 use App\Repositories\FileGiftCardRepository;

@@ -5,11 +5,8 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Integration">
-            <directory>tests/Integration</directory>
+        <testsuite name="EndToEnd">
+            <directory>tests/EndToEnd</directory>
         </testsuite>
     </testsuites>
     <source>
@@ -29,6 +26,5 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
-        <env name="GIFTFLOW_WEBHOOK_SECRET" value="3tE7Gczw76fAgE1wLRxlGUTg"/>
     </php>
 </phpunit>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Integration;
+namespace Tests\EndToEnd;
 
 use Illuminate\Support\Facades\Cache;
 use Mockery;
