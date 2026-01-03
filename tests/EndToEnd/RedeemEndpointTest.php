@@ -98,6 +98,7 @@ class RedeemEndpointTest extends TestCase
 
     public function test_should_not_allow_redeeming_same_code_twice(): void
     {
+        $queue = Queue::fake();
         $body = [
             'code' => 'GFLOW-TEST-0001',
             'user' => ['email' => 'user@example.com'],
@@ -131,5 +132,7 @@ class RedeemEndpointTest extends TestCase
         $this->post('api/redeem', $body, ['Accept' => 'application/json'])
             ->assertStatus(409)
             ->assertJson(['message' => 'Gift card already redeemed']);
+
+        $queue->assertPushed(NotifyGiftCardIssuerRedemptionJob::class, 1);
     }
 }
