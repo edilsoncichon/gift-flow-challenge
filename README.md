@@ -37,6 +37,9 @@ cp .env.example .env
 
 # Seed initial gift card codes (JSON persistence)
 ./sail php artisan giftflow:seed
+
+# Restart container to apply changes
+./sail restart
 ```
 
 ## ⚙️ Utility Commands
@@ -47,7 +50,7 @@ cp .env.example .env
 # Running Tests
 ./sail php artisan test
 # Fix the code syntax following Laravel Pint standards
-./sail vendor/bin/pint
+./sail pint
 ```
 
 ## 📖 API Endpoints
